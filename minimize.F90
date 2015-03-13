@@ -42,6 +42,7 @@ subroutine steepest_descent(ndim,x,f,xtol,gtol,ftol,maxiter &
   endif
 
   do iter=1,maxiter
+    fp= f
 !.....line minimization
     call quad_interpolate(ndim,x,g,f,xtol,gtol,ftol,alpha,iprint &
          ,iflag,func)
@@ -66,19 +67,19 @@ subroutine steepest_descent(ndim,x,f,xtol,gtol,ftol,maxiter &
            ,iter,x(1:ndim),f,gnorm
     endif
 !.....check convergence 
-    if( abs(alpha).lt.xtol ) then
-      print *,'>>> SD converged wrt xtol'
-      write(6,'(a,2es15.7)') '   alpha,xtol=',alpha,xtol
-      iflag= iflag +1
-      return
-    else if( gnorm.lt.gtol ) then
+!!$    if( abs(alpha).lt.xtol ) then
+!!$      print *,'>>> SD converged wrt xtol'
+!!$      write(6,'(a,2es15.7)') '   alpha,xtol=',alpha,xtol
+!!$      iflag= iflag +1
+!!$      return
+    if( gnorm.lt.gtol ) then
       print *,'>>> SD converged wrt gtol'
       write(6,'(a,2es15.7)') '   gnorm,gtol=',gnorm,gtol
       iflag= iflag +2
       return
-    else if( abs(f-fp).lt.ftol ) then
+    else if( abs(f-fp)/abs(fp).lt.ftol ) then
       print *,'>>> Sd converged wrt ftol'
-      write(6,'(a,2es15.7)') '   f-fp,ftol=',abs(f-fp),ftol
+      write(6,'(a,2es15.7)') '   f-fp,ftol=',abs(f-fp)/abs(fp),ftol
       iflag= iflag +3
       return
     endif
@@ -136,6 +137,7 @@ subroutine cg(ndim,x,f,xtol,gtol,ftol,maxiter,iprint,iflag &
   u(1:ndim)= -g(1:ndim)
 
   do iter=1,maxiter
+    fp= f
 !.....line minimization
     call quad_interpolate(ndim,x,u,f,xtol,gtol,ftol,alpha,iprint &
          ,iflag,func)
@@ -163,19 +165,19 @@ subroutine cg(ndim,x,f,xtol,gtol,ftol,maxiter,iprint,iflag &
            ,iter,x(1:ndim),f,gnorm
     endif
 !.....check convergence 
-    if( abs(alpha).lt.xtol ) then
-      print *,'>>> CG converged wrt xtol'
-      write(6,'(a,2es15.7)') '   alpha,xtol=',alpha,xtol
-      iflag= iflag +1
-      return
-    else if( gnorm.lt.gtol ) then
+!!$    if( abs(alpha).lt.xtol ) then
+!!$      print *,'>>> CG converged wrt xtol'
+!!$      write(6,'(a,2es15.7)') '   alpha,xtol=',alpha,xtol
+!!$      iflag= iflag +1
+!!$      return
+    if( gnorm.lt.gtol ) then
       print *,'>>> CG converged wrt gtol'
       write(6,'(a,2es15.7)') '   gnorm,gtol=',gnorm,gtol
       iflag= iflag +2
       return
-    else if( abs(f-fp).lt.ftol ) then
+    else if( abs(f-fp)/abs(fp).lt.ftol ) then
       print *,'>>> CG converged wrt ftol'
-      write(6,'(a,2es15.7)') '   f-fp,ftol=',abs(f-fp),ftol
+      write(6,'(a,2es15.7)') '   f-fp,ftol=',abs(f-fp)/abs(fp),ftol
       iflag= iflag +3
       return
     endif
@@ -275,21 +277,21 @@ subroutine bfgs(ndim,x0,f,xtol,gtol,ftol,maxiter &
            ,iter,x(1:ndim),f,gnorm
     endif
 !.....check convergence 
-    if( abs(alpha).lt.xtol ) then
-      print *,'>>> BFGS converged wrt xtol'
-      write(6,'(a,2es15.7)') '   alpha,xtol=',alpha,xtol
-      x0(1:ndim)= x(1:ndim)
-      iflag= iflag +1
-      return
-    else if( gnorm.lt.gtol ) then
+!!$    if( abs(alpha).lt.xtol ) then
+!!$      print *,'>>> BFGS converged wrt xtol'
+!!$      write(6,'(a,2es15.7)') '   alpha,xtol=',alpha,xtol
+!!$      x0(1:ndim)= x(1:ndim)
+!!$      iflag= iflag +1
+!!$      return
+    if( gnorm.lt.gtol ) then
       print *,'>>> BFGS converged wrt gtol'
       write(6,'(a,2es15.7)') '   gnorm,gtol=',gnorm,gtol
       x0(1:ndim)= x(1:ndim)
       iflag= iflag +2
       return
-    else if( abs(f-fp).lt.ftol ) then
+    else if( abs(f-fp)/abs(fp).lt.ftol ) then
       print *,'>>> BFGS converged wrt ftol'
-      write(6,'(a,2es15.7)') '   f-fp,ftol=',abs(f-fp),ftol
+      write(6,'(a,2es15.7)') '   f-fp,ftol=',abs(f-fp)/abs(fp),ftol
       x0(1:ndim)= x(1:ndim)
       iflag= iflag +3
       return
